@@ -16,7 +16,7 @@ def buscar_error_autentificacion():
 
             for usuario, cantidad_errores in contador_errores.items():
                 # se guarda en el csv
-                escribir_csv.uardar_resultado_csv('verificar_logs', 'error_autificacion',usuario, cantidad_errores)
+                escribir_csv.guardar_resultado_csv('verificar_logs', 'error_autificacion',usuario, cantidad_errores)
 
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
                     print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Por seguridad, se bloqueara al usuario")
@@ -83,8 +83,6 @@ def buscar_errores_httpd():
                 acciones.bloquear_ip(ip)
     except:
         print('Ocurrio un error al buscar errores de cargas de paginas web ')
-
-        # Implementar acciones de respuesta como bloqueo de IP o restricción de acceso
 
 def buscar_mails_masivos():
     with open('/var/log/maillog', 'r') as maillog_file:
