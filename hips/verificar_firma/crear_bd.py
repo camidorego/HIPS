@@ -25,11 +25,12 @@ def crear_tabla():
             # Si la tabla no existe, la creamos
             cursor.execute("CREATE TABLE firmas(nombre_archivo varchar(50), firma varchar(64));")
             print("Tabla 'firmas' creada correctamente.")
+            tabla_existe=True
         
-        #se insertan las firmas
-        cursor.execute("INSERT INTO firmas(nombre_archivo, firma) VALUES (%s, %s), (%s, %s);",
-                   ('/etc/passwd', firma1, '/etc/shadow', firma2))
-        print('Se inserto')
+            #se insertan las firmas
+            cursor.execute("INSERT INTO firmas(nombre_archivo, firma) VALUES (%s, %s), (%s, %s);",
+                ('/etc/passwd', firma1, '/etc/shadow', firma2))
+            print('Se inserto')
         
         # Cerrar la conexión y guardar los cambios
         conexion.commit()
@@ -38,7 +39,7 @@ def crear_tabla():
         
     except psycopg2.Error as e:
         print(f"Error al crear la tabla: {e}")
-
+    return tabla_existe
 if __name__=="__main__":
     crear_tabla()
 

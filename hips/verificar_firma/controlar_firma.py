@@ -1,6 +1,7 @@
 import time
 import psycopg2 
 import calcular_hash
+import crear_bd
 
 def comparar_firma():
 
@@ -52,4 +53,6 @@ def comparar_firma():
         time.sleep(120)    
 
 if __name__=="__main__":
-    comparar_firma()
+    tabla_existe=crear_bd.crear_bd()
+    if tabla_existe:
+        comparar_firma()
