@@ -39,7 +39,7 @@ def buscar_failed_password_secure():
             print("Se encontraron intentos de inicio de sesión fallidos:")
             for usuario, cantidad_errores in contador_errores.items():
                 # se guarda en el csv
-                escribir_csv.uardar_resultado_csv('verificar_logs', 'failed_password',usuario, cantidad_errores)
+                escribir_csv.guardar_resultado_csv('verificar_logs', 'failed_password',usuario, cantidad_errores)
 
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
                     print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")
