@@ -75,7 +75,7 @@ def buscar_errores_httpd():
         contador_ip=Counter(ips)
         for ip, cantidad_errores in contador_ip.items():
             # se guarda en el csv
-            escribir_csv.uardar_resultado_csv('verificar_logs', 'error_httpd',ip, cantidad_errores)
+            escribir_csv.guardar_resultado_csv('verificar_logs', 'error_httpd',ip, cantidad_errores)
             if cantidad_errores > 10:
                 print(f"La IP {ip} ha generado {cantidad_errores} errores 404 en el registro de acceso.")
 
