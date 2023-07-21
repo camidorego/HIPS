@@ -108,7 +108,7 @@ def buscar_mails_masivos():
 
     for direccion, cantidad in envios_masivos.items():
         # se guarda en el csv
-        escribir_csv.uardar_resultado_csv('verificar_logs', 'envio_mail_masivo',direccion, cantidad)
+        escribir_csv.guardar_resultado_csv('verificar_logs', 'envio_mail_masivo',direccion, cantidad)
         print(f"Dirección: {direccion}, Cantidad de envíos: {cantidad}")
         if cantidad>50:
             #Bloqueamos el correo
