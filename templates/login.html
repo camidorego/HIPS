@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="login-page">
+        <div class="form">
+            <form class="register-form">
+                <label for="name">Username</label>
+                <input id="name" type="text" placeholder="name" />
+                <label for="passwd">Contrasena</label>
+                <input id="passwd" type="password" placeholder="password" />
+                <label for="email">Correo</label>
+                <input id="email" type="text" placeholder="email address" />
+                <button>create</button>
+                <p class="message">Ya tienes una cuenta? <a href="#">Sign In</a></p>
+            </form>
+            <form class="login-form">
+                <label for="name">Username</label>
+                <input id="name" type="text" placeholder="username" />
+                <label for="passwd">Contrasena</label>
+                <input id="passwd" type="password" placeholder="password" />
+                <button>login</button>
+                <a href="#" type="button">Crear una cuenta</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

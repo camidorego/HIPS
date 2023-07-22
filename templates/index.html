@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 id="titulo">{% block title %}Sistema de Prevención y Detección de Intrusos{% endblock %}</h1>
+    <div id="main" class="container text-center">
+        <div class="row align-items-start">
+            <div id="pr" class="col">
+                <h4>Verificar Archivos Binarios</h4>
+                <img src="{{ url_for('static', filename= 'img/4.png') }}" alt="archivo binario">
+                <p>Verificaremos la firma de los archivos /etc/shadow y de /etc/passwd para asegurar que no haya sido
+                    modificado</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+
+            <div id="pr" class="col">
+                <h4>Usuarios Conectados</h4>
+                <img src="{{ url_for('static', filename= 'img/3.png') }}" alt="usuarios conectados">
+                <p>Verificaremos todos los usuarios conectados al sistema y el origen</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+
+            <div id="pr" class="col">
+                <h4>Sniffers</h4>
+                <img src="{{ url_for('static', filename= 'img/5.jpg') }}" alt="sniffer">
+                <p>Verificaremos el sistema en busca de sniffers</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+        </div>
+
+        <div class="row align-items-start">
+            <div id="pr" class="col">
+                <h4>Archivos Logs</h4>
+                <img src="{{ url_for('static', filename= 'img/1.png') }}" alt="logs">
+                <p>Revisaremos los archivos logs en busca de patrones de accesos indebidos</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+
+            <div id="pr" class="col">
+                <h4>Cola de Mail</h4>
+                <img src="{{ url_for('static', filename= 'img/6.png') }}" alt="logs">
+                <p>Verificaremos el tamaño de la cola de mail.</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+
+            <div id="pr" class="col">
+                <h4>Rendimiento del Sistema</h4>
+                <img src="{{ url_for('static', filename= 'img/2.png') }}" alt="logs">
+                <p>Verificaremos los procesos que estan sienod ejecutados y el porcentaje de memoria que ocupan. De
+                    acuerdo se
+                    decidira si deben ser terminados o no</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+        </div>
+
+        <div class="row align-items-start">
+            <div id="pr" class="col">
+                <h4>Directorio /tmp</h4>
+                <img src="{{ url_for('static', filename= 'img/9.png') }}" alt="logs">
+                <p>Revisaremos el directorio /tmp para asegurarnos que no haya ningun script sospechoso corriendo</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+
+            <div id="pr" class="col">
+                <h4>Cron</h4>
+                <img src="{{ url_for('static', filename= 'img/10.png') }}" alt="logs">
+                <p>Verificaremos si hay algun archivo de cron corriendo</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+
+            <div id="pr" class="col">
+                <h4>Ataque de DDoS</h4>
+                <img src="{{ url_for('static', filename= 'img/8.png') }}" alt="logs">
+                <p>Verificaremos el sistema en busca de un ataque de Denegación de Servicio Distribuido</p>
+                <button type="button" class="btn">Verificar</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
