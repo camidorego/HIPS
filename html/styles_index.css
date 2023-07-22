@@ -31,24 +31,26 @@ img {
 }
 
 #pr {
-    border: 6px solid #bde0fe;
+    border: 6px solid #8ecae6;
     background-color: white;
     padding: 35px;
     margin: 30px;
     height: 315px;
     width: 50%;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
-.btn {
-    background-color: #bde0fe;
+.btn,
+a {
+    background-color: #219ebc;
     margin-bottom: 5px;
     margin-top: 5px;
-    border: 2px solid #219ebc;
-    color: black
+    color: white;
+    font-weight: bold;
 }
 
 .btn:hover {
     background-color: #cdb4db;
-    color: white
+    color: white;
 }
