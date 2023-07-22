@@ -1,0 +1,54 @@
+body {
+    background-color: #cdb4db;
+
+}
+
+p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    text-align: center;
+    color: #051923;
+    margin-top: 60px;
+    margin-bottom: 80px;
+}
+
+h4 {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+p {
+    text-align: justify;
+}
+
+img {
+    max-height: 70px;
+    max-width: 35%;
+}
+
+#pr {
+    border: 6px solid #bde0fe;
+    background-color: white;
+    padding: 35px;
+    margin: 30px;
+    height: 315px;
+    width: 50%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+.btn {
+    background-color: #bde0fe;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    border: 2px solid #219ebc;
+    color: black
+}
+
+.btn:hover {
+    background-color: #cdb4db;
+    color: white
+}
