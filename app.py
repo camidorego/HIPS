@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import psycopg2
+import subprocess
 
 
 app = Flask(__name__)
@@ -73,6 +74,11 @@ def register():
 def index():
 	return render_template('index.html')
 
+@app.route('/hips/<folder>/<program_name>')
+def ejecutar_herramienta(folder,program_name):
+    subprocess.run(["python3", f"./{folder}/{program_name}.py"])
+    
+
 @app.route('/')
 def root():
     # Check if the user is logged in
@@ -82,6 +88,7 @@ def root():
     else:
         # If the user is not logged in, redirect to the login page
         return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
