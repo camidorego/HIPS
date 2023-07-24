@@ -19,7 +19,8 @@ import escribir_resultado
 def buscar_error_autentificacion():
     try:
         #output = subprocess.check_output(["sudo","grep", "authentication failure", "/var/log/secure"]).decode('utf-8')
-        output=subprocess.run(["sudo","grep", "authentication failure", "/var/log/secure"], check=True, capture_output=True).stdout.decode('utf-8').strip()
+        #output=subprocess.run(["sudo","grep", "authentication failure", "/var/log/secure"], check=True, capture_output=True).stdout.decode('utf-8').strip()
+        output=subprocess.check_output("sudo cat /var/log/httpd/access.log | grep -i 'HTTP' | grep -i '404'", shell=True).decode('utf-8')
         if output:
             usuarios_errores = re.findall(r'user=(\S+)', output)
             contador_errores = Counter(usuarios_errores)
