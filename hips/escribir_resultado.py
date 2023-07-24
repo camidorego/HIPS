@@ -19,7 +19,7 @@ def escribir_log(tipo_alarma, mensaje):
         ruta_archivo = os.path.join("/var/log/hips/alarmas.log")
         with open(ruta_archivo, mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([fecha, tipo_alarma, ip, mensaje])
+            writer.writerow([fecha, tipo_alarma, mensaje])
     except Exception as e:
         print(f'Ocurrió un error al guardar los resultados en alarmas.log: {e}')
 

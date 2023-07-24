@@ -30,7 +30,6 @@ def buscar_ddoc():
             ips[(ip_origen, ip_destino)] += 1
         else:
             ips[(ip_origen, ip_destino)] = 1
-    
     for ip_pair, occurrences in ips.items():
         if occurrences > 10:
             print(f"La IP {ip_pair[0]} intento conectarse a {ip_pair[1]} {occurrences} veces. Esto puede indicar un ataque DDoC")

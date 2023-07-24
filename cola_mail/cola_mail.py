@@ -31,7 +31,7 @@ def main():
     cola = tamanho_cola()
     if cola is not None:
         print(f"Tamaño de la cola de correos: {cola} mensajes.")
-        escribir_resultado.guardar_resultado_csv('ver_cola_mail','ver_cola_mail','tamanho de cola de mail',cola)
+        escribir_resultado.guardar_resultado_csv('cola_mail','cola_mail','tamanho de cola de mail',cola)
         
         # si la cola es muy grande se revisa si hay envios masivos a un mismo destinatario y se bloquea
         if cola>50:

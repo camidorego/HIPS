@@ -10,7 +10,7 @@ parent_dir = os.path.dirname(current_dir)
 # agregamos el path /hips a los directorios donde se buscaran los modulos
 sys.path.append(parent_dir)
 
-import hips.escribir_resultado as escribir_resultado
+import escribir_resultado
 
 
 try:

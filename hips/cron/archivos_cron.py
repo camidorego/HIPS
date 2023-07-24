@@ -1,5 +1,16 @@
 import subprocess
-import hips.escribir_resultado as escribir_resultado
+import sys
+import os
+
+# directorio actual
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# directorio hips
+parent_dir = os.path.dirname(current_dir)
+
+# agregamos el path /hips a los directorios donde se buscaran los modulos
+sys.path.append(parent_dir)
+import escribir_resultado
 
 def lista_usuarios():
     # obtenemos la lista de usuarios

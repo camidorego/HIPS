@@ -1,6 +1,15 @@
 import os
 import shutil
-import hips.escribir_resultado as escribir_resultado
+import sys
+# directorio actual
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# directorio hips
+parent_dir = os.path.dirname(current_dir)
+
+# agregamos el path /hips a los directorios donde se buscaran los modulos
+sys.path.append(parent_dir)
+import escribir_resultado
 
 def ver_extension(archivo):
     # verificamos la extension del archivo
@@ -25,6 +34,7 @@ def verificar_tmp():
     
     if not suspicious_files:
         print("No se encontraron archivos sospechosos en /tmp.")
+        escribir_resultado.guardar_resultado_csv('tmp','verificar_tmp',"No se encontraron archivos sospechosos en /tmp.",'')
     else:
         print("Archivos sospechosos encontrados:")
         # si se encontraron archivos sospechosos se imprime y se mueven los archivos al directorio de cuarentena

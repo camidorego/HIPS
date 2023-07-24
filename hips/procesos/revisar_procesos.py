@@ -1,6 +1,16 @@
 import psutil
 import time
-import hips.escribir_resultado as escribir_resultado
+import sys
+import os
+# directorio actual
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# directorio hips
+parent_dir = os.path.dirname(current_dir)
+
+# agregamos el path /hips a los directorios donde se buscaran los modulos
+sys.path.append(parent_dir)
+import escribir_resultado
 
 def procesos_mucha_memoria(memory_threshold_mb, time_threshold_seconds):
     high_memory_processes = []
@@ -31,6 +41,7 @@ def main():
 
     if not high_memory_processes:
         print("No se encontraron procesos con consumo elevado de memoria.")
+        escribir_resultado.guardar_resultado_csv('procesos','revisar_procesos',"No se encontraron procesos con consumo elevado de memoria.",'')
     else:
         print("Procesos con consumo elevado de memoria:")
         for process_info in high_memory_processes:
