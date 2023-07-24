@@ -1,6 +1,6 @@
 import psutil
 import time
-import escribir_csv
+import hips.escribir_resultado as escribir_resultado
 
 def procesos_mucha_memoria(memory_threshold_mb, time_threshold_seconds):
     high_memory_processes = []
@@ -35,14 +35,13 @@ def main():
         print("Procesos con consumo elevado de memoria:")
         for process_info in high_memory_processes:
             print(f" - PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%")
-            escribir_csv.guardar_resultado_csv('verificar_procesos','procesos_alto_consumo',process_info,'')
+            escribir_resultado.guardar_resultado_csv('procesos','revisar_procesos',f" - PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%",'')
+            escribir_resultado.escribir_log('Proceso consumiendo mucha memoria',f" - PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%")
 
-        # Pregunta si desea matar los procesos identificados
-        response = input("¿Desea matar los procesos identificados? [y/N]: ").lower()
-        if response == 'y':
-            kill_processes(high_memory_processes)
-        else:
-            print("Los procesos no fueron terminados.")
+        kill_processes(high_memory_processes)
+        escribir_resultado.escribir_prevencion(f"Se termino el proceso por alto consumo de memoria -> PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%")
+
+        
 
 if __name__ == "__main__":
     main()

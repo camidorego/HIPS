@@ -1,5 +1,5 @@
 import subprocess
-import escribir_csv
+import hips.escribir_resultado as escribir_resultado
 
 def lista_usuarios():
     # obtenemos la lista de usuarios
@@ -28,6 +28,7 @@ def main():
     
     if not archivos_cron:
         print("No se encontraron archivos de cron para ningún usuario en el sistema.")
+        escribir_resultado.guardar_resultado_csv('cron','archivos_cron','No se encontraron archivos de cron para ningún usuario en el sistema.','')
     else:
         print("Archivos de cron encontrados para los siguientes usuarios:")
         for user, cron_archivo in archivos_cron:
@@ -35,9 +36,11 @@ def main():
             print(cron_archivo, '\n')
 
             # se guarda la informacion en el csv
-            escribir_csv.guardar_resultado_csv('verificar_procesos','archivos_cron',user,cron_archivo)
+            escribir_resultado.guardar_resultado_csv('cron','archivos_cron',user,cron_archivo)
+            escribir_resultado.escribir_log('Cron', f'Se encontro el archivo de cron {cron_archivo} ejecutandose para el usuario {user}')
             
         print("Se le notificara al administrador")
+        escribir_resultado.escribir_prevencion(f'Se envio un correo al administrador porque se encontro el archivo de cron {cron_archivo} ejecutandose para el usuario {user}')
         #enviar correo al administrador
 
         

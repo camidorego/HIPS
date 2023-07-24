@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="resultado" class="container">
+    <h2>El sistema dice:</h2>
+    <div id="espacio" class="row">
+        <div class="col">
+            {% for fila in datos %}
+                <p>{{ fila[0] }} -> {{fila[1]}} {{fila[2]}}</p>
+                            <!-- Agrega aquí más celdas según la estructura de tu archivo CSV -->
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="{{ url_for('index') }}">Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

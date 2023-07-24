@@ -1,37 +1,39 @@
 import re
+import os
+import sys
+import subprocess
 
-def intento_acceso(log_file):
-    cant_intentos = {}
+# directorio actual
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    with open(log_file, 'r') as file:
-        for line in file:
-            if 'password check failed' in line:
-                # Usamos split para separar los campos relevantes de la línea
-                campos = line.split()
-                if len(campos) >= 10:
-                    user = campos[5]
-                    source_ip = campos[7]
-                    key = (user, source_ip)
-                    cant_intentos[key] = cant_intentos.get(key, 0) + 1
+# directorio hips
+parent_dir = os.path.dirname(current_dir)
 
-    return cant_intentos
+# agregamos el path /hips a los directorios donde se buscaran los modulos
+sys.path.append(parent_dir)
 
-def main():
-    log_file = '/var/log/secure'  # Ruta al archivo de registro de autenticación en CentOS
-    cant_intentos = intento_acceso(log_file)
+import hips.escribir_resultado as escribir_resultado
 
-    if not cant_intentos:
-        print("No se encontraron intentos de acceso no válidos.")
-    else:
-        print("Intentos de acceso no válidos:")
-        for (user, source_ip), count in cant_intentos.items():
-            if user and source_ip:
-                print(f"Desde: {source_ip}, Usuario: {user}, Intentos: {count}")
-            elif source_ip:
-                print(f"Desde: {source_ip}, Usuario: Desconocido, Intentos: {count}")
-            else:
-                 print(f"Desde: Desconocido, Usuario: {user}, Intentos: {count}")
+def buscar_acceso_indebido():
+    try:
+        resultado = subprocess.run("sudo cat /var/log/secure | grep -i 'sshd' | grep -i 'Failed password'", shell=True, capture_output=True, text=True).stdout.split('\n')[:-1]
+    except:
+        print("Error al buscar accesos indebidos")
+
+    contador_ip = {}
+
+    for line in resultado:
+        ip_origen = line.split()[-4] 
+        if ip_origen in contador_ip:
+            contador_ip[ip_origen]= contador_ip[ip_origen] + 1
+        else:
+            contador_ip[ip_origen]=1
+    
+    for ip, count in contador_ip:
+        if count > 8:
+            escribir_resultado.guardar_resultado_csv('accesos','accesos_no_validos',f'Se encontraron {count} intentos de acceso',f'desde {ip}')
+            escribir_resultado.escribir_log('Acceso Indebido', f'Se encontraron {count} intentos de acceso desde {ip}')
                
 
 if __name__ == "__main__":
-    main()
+    buscar_acceso_indebido()

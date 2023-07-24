@@ -2,12 +2,24 @@ import subprocess
 from collections import Counter
 import re
 import acciones
-import escribir_csv
+import os
+import sys
+
+# directorio actual
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# directorio hips
+parent_dir = os.path.dirname(current_dir)
+
+# agregamos el path /hips a los directorios donde se buscaran los modulos
+sys.path.append(parent_dir)
+import hips.escribir_resultado as escribir_resultado
 
 
 def buscar_error_autentificacion():
     try:
-        output = subprocess.check_output(["grep", "authentication failure", "/var/log/secure"]).decode('utf-8')
+        #output = subprocess.check_output(["sudo","grep", "authentication failure", "/var/log/secure"]).decode('utf-8')
+        output=subprocess.run(["sudo","grep", "authentication failure", "/var/log/secure"], check=True, capture_output=True).stdout.decode('utf-8').strip()
         if output:
             usuarios_errores = re.findall(r'user=(\S+)', output)
             contador_errores = Counter(usuarios_errores)
@@ -16,10 +28,12 @@ def buscar_error_autentificacion():
 
             for usuario, cantidad_errores in contador_errores.items():
                 # se guarda en el csv
-                escribir_csv.guardar_resultado_csv('verificar_logs', 'error_autificacion',usuario, cantidad_errores)
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
+                escribir_resultado.escribir_log('Autenticación Fallida',f'Se encontraron {cantidad_errores} errores de autenticacion para {usuario}')
 
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
                     print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Por seguridad, se bloqueara al usuario")
+                    escribir_resultado.escribir_prevencion(f'Se bloqueo al usuario {usuario} porque se encontraron {cantidad_errores} errores de autenticacion')
                           
                     # se bloquea al usuario temporalmente
                     acciones.bloquear_usuario(usuario)
@@ -32,20 +46,23 @@ def buscar_error_autentificacion():
 
 def buscar_failed_password_secure():
     try:
-        output = subprocess.check_output(["grep", "password check failed", "/var/log/secure"]).decode('utf-8')
+        #output = subprocess.check_output(["sudo","grep", "password check failed", "/var/log/secure"]).decode('utf-8')
+        output=subprocess.run(["sudo","grep", "password check failed", "/var/log/secure"], check=True, capture_output=True).stdout.decode('utf-8').strip()
         if output:
             usuarios_errores = re.findall(r'user (\S+)', output)
             contador_errores = Counter(usuarios_errores)
             print("Se encontraron intentos de inicio de sesión fallidos:")
             for usuario, cantidad_errores in contador_errores.items():
                 # se guarda en el csv
-                escribir_csv.guardar_resultado_csv('verificar_logs', 'failed_password',usuario, cantidad_errores)
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
+                escribir_resultado.escribir_log('Password Check Failed',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}')
 
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
                     print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")
 
                     # se cambia la contrasena del usuario
                     nueva_contrasena=input(f"Ingresa una contrasenha temporal para el usuario: {usuario}")
+                    escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
                     acciones.cambiar_contrasena(usuario, nueva_contrasena)
 
                     
@@ -57,6 +74,8 @@ def buscar_failed_password_secure():
 def buscar_authentication_failure_messages():
     try:
         resultado = subprocess.check_output("sudo grep -i 'service=smtp' /var/log/messages | grep -i 'auth failure'", shell=True).decode('utf-8')
+        
+        
         if resultado.stdout:
             print("Se encontraron eventos de autenticación fallida:")
             print(resultado.stdout)
@@ -66,7 +85,7 @@ def buscar_authentication_failure_messages():
 
 def buscar_errores_httpd():
     try:
-        resultado = subprocess.check_output("grep -i 'HTTP' /var/log/httpd/access_log | grep -i '404' | awk '{print $1, $9}'", shell=True).decode('utf-8')
+        resultado = subprocess.check_output("sudo grep -i 'HTTP' /var/log/httpd/access_log | grep -i '404' | awk '{print $1, $9}'", shell=True).decode('utf-8')
         print(resultado)
         ips=[]
         for linea in resultado.splitlines():
@@ -75,12 +94,14 @@ def buscar_errores_httpd():
         contador_ip=Counter(ips)
         for ip, cantidad_errores in contador_ip.items():
             # se guarda en el csv
-            escribir_csv.guardar_resultado_csv('verificar_logs', 'error_httpd',ip, cantidad_errores)
+            escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',ip, cantidad_errores)
+            escribir_resultado.escribir_log('Anomalias de Trafico', f"La IP {ip} ha generado {cantidad_errores} errores 404 en el registro de acceso.")
             if cantidad_errores > 10:
                 print(f"La IP {ip} ha generado {cantidad_errores} errores 404 en el registro de acceso.")
 
                 # bloqueamos la ip 
                 acciones.bloquear_ip(ip)
+                escribir_resultado.escribir_prevencion(f'Por seguridad se bloqueo la ip {ip} porque ha generado {cantidad_errores} errores 404 en el registro de acceso.')
     except:
         print('Ocurrio un error al buscar errores de cargas de paginas web ')
 
@@ -108,15 +129,17 @@ def buscar_mails_masivos():
 
     for direccion, cantidad in envios_masivos.items():
         # se guarda en el csv
-        escribir_csv.guardar_resultado_csv('verificar_logs', 'envio_mail_masivo',direccion, cantidad)
+        escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',direccion, cantidad)
+        escribir_resultado.escribir_log('Seguridad de Correo Electrónico',f"A la dirección {direccion} se le envio {cantidad} correos")
         print(f"Dirección: {direccion}, Cantidad de envíos: {cantidad}")
         if cantidad>50:
             #Bloqueamos el correo
             acciones.bloquear_email(direccion)
+            escribir_resultado.escribir_prevencion(f'Se bloque la direccion {direccion} por envio de correos masivos')
 
 
 def main():
-    print("Iniciando programa de detección y respuesta de seguridad...")
+    #print("Iniciando programa de detección y respuesta de seguridad...")
     buscar_failed_password_secure()
     buscar_authentication_failure_messages()
     buscar_errores_httpd()

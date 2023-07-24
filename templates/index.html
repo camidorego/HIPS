@@ -9,21 +9,21 @@
                 <img src="{{ url_for('static', filename= 'img/4.png') }}" alt="archivo binario">
                 <p>Verificaremos la firma de los archivos /etc/shadow y de /etc/passwd para asegurar que no haya sido
                     modificado</p>
-                <a href="/hips/verificar_firma/controlar_firma.py" class="btn">Verificar</a>
+                <a href="/verificar_firma/controlar_firma" class="btn">Verificar</a>
             </div>
 
             <div id="pr" class="col">
                 <h4>Usuarios Conectados</h4>
                 <img src="{{ url_for('static', filename= 'img/3.png') }}" alt="usuarios conectados">
                 <p>Verificaremos todos los usuarios conectados al sistema y el origen</p>
-                <a href="/hips/usuarios_conectados/usuarios.py" class="btn">Verificar</a>
+                <a href="/usuarios_conectados/usuarios" class="btn">Verificar</a>
             </div>
 
             <div id="pr" class="col">
                 <h4>Sniffers</h4>
                 <img src="{{ url_for('static', filename= 'img/5.jpg') }}" alt="sniffer">
                 <p>Verificaremos el sistema en busca de sniffers</p>
-                <a href="/hips/sniffer/sniffers.py" class="btn">Verificar</a>
+                <a href="/sniffer/sniffers" class="btn">Verificar</a>
             </div>
         </div>
 
@@ -32,50 +32,99 @@
                 <h4>Archivos Logs</h4>
                 <img src="{{ url_for('static', filename= 'img/1.png') }}" alt="logs">
                 <p>Revisaremos los archivos logs en busca de patrones de accesos indebidos</p>
-                <a href="/hips/controlar_logs/revisar_logs.py" class="btn">Verificar</a>
+                <a href="/controlar_logs/revisar_logs" class="btn">Verificar</a>
+            </div>
+
+            <div id="pr" class="col">
+                <h4>Accesos no validos</h4>
+                <img src="{{ url_for('static', filename= 'img/8.png') }}" alt="logs">
+                <p>Verificaremos el sistema en busca de un ataque de Denegación de Servicio Distribuido</p>
+                <a href="/ddoc/ataque_ddoc" class="btn">Verificar</a>
             </div>
 
             <div id="pr" class="col">
                 <h4>Cola de Mail</h4>
                 <img src="{{ url_for('static', filename= 'img/6.png') }}" alt="logs">
                 <p>Verificaremos el tamaño de la cola de mail.</p>
-                <a href="/hips/cola_mail/cola_mail.py" class="btn">Verificar</a>
+                <a href="/cola_mail/cola_mail" class="btn">Verificar</a>
             </div>
-
+        </div>
+        <div class="row align-items-start">
             <div id="pr" class="col">
                 <h4>Rendimiento del Sistema</h4>
                 <img src="{{ url_for('static', filename= 'img/2.png') }}" alt="logs">
                 <p>Verificaremos los procesos que estan sienod ejecutados y el porcentaje de memoria que ocupan. De
                     acuerdo se
                     decidira si deben ser terminados o no</p>
-                <a href="/hips/procesos/revisar_procesos.py" class="btn">Verificar</a>
+                <a href="/procesos/revisar_procesos" class="btn">Verificar</a>
             </div>
-        </div>
-
-        <div class="row align-items-start">
+        
             <div id="pr" class="col">
                 <h4>Directorio /tmp</h4>
                 <img src="{{ url_for('static', filename= 'img/9.png') }}" alt="logs">
                 <p>Revisaremos el directorio /tmp para asegurarnos que no haya ningun script sospechoso corriendo</p>
-                <a href="/hips/tmp/verificar_tmp.py" class="btn">Verificar</a>
+                <a href="/tmp/verificar_tmp" class="btn">Verificar</a>
             </div>
 
             <div id="pr" class="col">
                 <h4>Cron</h4>
                 <img src="{{ url_for('static', filename= 'img/10.png') }}" alt="logs">
                 <p>Verificaremos si hay algun archivo de cron corriendo</p>
-                <a href="/hips/cron/archivos_cron.py" class="btn">Verificar</a>
+                <a href="/cron/archivos_cron" class="btn">Verificar</a>
             </div>
-
+        </div>
+        <div class="row align-items-start">
             <div id="pr" class="col">
                 <h4>Ataque de DDoS</h4>
                 <img src="{{ url_for('static', filename= 'img/8.png') }}" alt="logs">
                 <p>Verificaremos el sistema en busca de un ataque de Denegación de Servicio Distribuido</p>
-                <a href="/hips/" class="btn">Verificar</a>
+                <a href="/ddoc/ataque_ddoc" class="btn">Verificar</a>
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block footer %}
+<footer class="bg-dark text-center text-white">
+    <div class="container p-4">
+
+        <section class="mb-4">
+            <a id="icon" class="btn btn-floating m-1" href="https://github.com/camidorego/HIPS">Ver Repo
+                GitHub</a>
+        </section>
+
+        <section class="">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Autor</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <h6>Camila Do Rego Barros</h6>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Info</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <h6>Sistemas Operativos 2</h6>
+                        </li>
+                        <li>
+                            <h6>Universidad Catolica de Asuncion</h6>
+                        </li>
+                        <li>
+                            <h6>2023</h6>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+  </footer>
 {% endblock %}

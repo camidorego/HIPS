@@ -1,9 +1,20 @@
 import subprocess
-import csv
-from datetime import datetime
+import os
+import sys
+# directorio actual
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# directorio hips
+parent_dir = os.path.dirname(current_dir)
+
+# agregamos el path /hips a los directorios donde se buscaran los modulos
+sys.path.append(parent_dir)
+
+import hips.escribir_resultado as escribir_resultado
+
 
 try:
-    fecha=datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    
 
     # se obtienen los usuarios conectados y sus respectivos puertos. Se convierte todo a texto con decode
     salida_texto = subprocess.check_output("who -H | awk '{print $1, $5}'", shell=True).decode('utf-8')
@@ -16,13 +27,11 @@ try:
     # Creamos una lista con tuplas (nombre_usuario, direccion_ip)
     usuarios_ip = [tuple(linea.strip().split()) for linea in salida_array]
 
-    # Guardamos la informacion en un archivo CSV
-    with open('/var/log/hips/usuarios_conectados.csv', 'w', newline='') as archivo_csv:
-        writer = csv.writer(archivo_csv)
-        writer.writerow(["FECHA Y HORA", "NOMBRE", "IP"])
-        for usuario in usuarios_ip:
-            print(fecha, usuario)
-            writer.writerow([fecha, usuario])
+    
+    for usuario,ip in usuarios_ip:
+        escribir_resultado.guardar_resultado_csv('usuarios_conectados','usuarios',usuario,ip)
+        
+
     
 
 except:

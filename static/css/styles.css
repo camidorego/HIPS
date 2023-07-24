@@ -48,6 +48,10 @@ a {
     color: white;
 }
 
+/* resultado */
+
+
+
 /* Login Form */
 
 .login-page {
@@ -95,24 +99,27 @@ a {
     cursor: pointer;
 }
 
-.form button:hover {
+.form button:hover, .form .message a:hover {
     background-color: #cdb4db;
     color: white
 }
 
 .form .message {
     margin: 15px 0 0;
-    color: #b3b3b3;
+    color: #219ebc;
     font-size: 12px;
 }
 
 .form .message a {
-    color: #219ebc;
+    max-height:1px;
+    max-width: 2px;
+    padding:0 2px 2px 2px;
+    margin:2px 2px 3px 2px;
+    color: white;
     text-decoration: none;
-}
-
-.form a {
-    color: #219ebc;
-    text-decoration: none;
+    text-align: center;
+    justify-content: center;
     padding-top: 15px;
 }
+
+

@@ -52,4 +52,5 @@ def cambiar_contrasena(nombre_usuario, nueva_contrasenha):
     except Exception as e:
         print("Error:", e)
 
-
+def enviar_mail(asunto, mensaje):
+    print('enviando')
