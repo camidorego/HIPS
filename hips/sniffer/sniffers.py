@@ -23,7 +23,7 @@ import acciones
 
 def detectar_sniffers():
     sniffers_conocidos = ["tcpdump", "tshark", "wireshark"]
-    sniffers=[]
+    sniffers_en_ejecucion=[]
     # se ejecuta el comando para ver si alguno de los programas se esta ejecutando
     for sniffer in sniffers_conocidos:
         comando = f"ps -aux | grep {sniffer} | grep -v grep |  awk '{{print $1, $2, $NF}}'"
@@ -31,11 +31,11 @@ def detectar_sniffers():
         print(resultado)
 
         # si se encontro un programa en ejecucion se guarda la informacion en el csv y se genera la alarma
-        if resultado.returncode != 0:
+        if resultado.stdout != '':
             print(f'Se ha detectado el proceso {sniffer} en ejecución. Esto podría indicar la presencia de un sniffer.')
             escribir_resultado.guardar_resultado_csv('sniffer','sniffers',f'Se detecto el proceso en ejecucion {sniffer}','. Puede indicar la presencia de un sniffer')
             escribir_resultado.escribir_log('Posible sniffer',f"Se ha detectado el proceso {sniffer} en ejecución. Esto podría indicar la presencia de un sniffer.")
-            sniffer.append(sniffer)
+            sniffers_en_ejecucion.append(sniffer)
 
         # si no se encontro ningun programa corriendo, tambien se guarda el resultado en un csv
         else:
@@ -43,10 +43,8 @@ def detectar_sniffers():
             escribir_resultado.guardar_resultado_csv('sniffer','sniffers',f"No se encontro ningun proceso '{sniffer}'. El sistema es seguro",'')
             
     # se envia un correo al administrador
-    if len(sniffers)!=0:
-        acciones.enviar_mail('Alarma!','Posible sniffer', f'Se encontraron los siguientes procesos en ejecucion: {sniffers}')
-
-
+    if len(sniffers_en_ejecucion)!=0:
+        acciones.enviar_mail('Alarma!','Posible sniffer', f'Se encontraron los siguientes procesos en ejecucion: {sniffers_en_ejecucion}')
 
 def modo_promiscuo(): 
     # se ejecuta el codigo para saber si el sistema entro en modo promiscuo
