@@ -177,7 +177,7 @@ En el navegador abre el siguiente link
 Te aparecera la pagina para logearte
 <p align="center">
   <a href="">
-    <img src="./static/images/login.png" alt="Login" width="1600" height="500">
+    <img src="./static/imag/login.png" alt="Login" width="1600" height="500">
   </a>
 </p>
 
@@ -185,7 +185,7 @@ Te aparecera la pagina para logearte
 Puedes crear una cuenta. Aprieta el boton de Crear Cuenta y te llevara a la pagina para registrarte
 <p align="center">
   <a href="">
-    <img src="./static/images/register.png" alt="Register" width="1600" height="500">
+    <img src="./static/imag/register.png" alt="Register" width="1600" height="500">
   </a>
 </p>
 
@@ -194,7 +194,7 @@ Una vez que completaste tu informacion se te llevara nuevamente a la pagina para
 Luego te aparecera el menu. Elige lo que quieres controlar y listo!
 <p align="center">
   <a href="">
-    <img src="./static/images/menu.png" alt="Menu" width="1600" height="500">
+    <img src="./static/imag/menu.png" alt="Menu" width="1600" height="500">
 </p>
 
 
