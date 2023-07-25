@@ -16,135 +16,125 @@ sys.path.append(parent_dir)
 import escribir_resultado
 
 
-def buscar_error_autentificacion():
+def buscar_access_log():
     try:
-        #output = subprocess.check_output(["sudo","grep", "authentication failure", "/var/log/secure"]).decode('utf-8')
-        #output=subprocess.run(["sudo","grep", "authentication failure", "/var/log/secure"], check=True, capture_output=True).stdout.decode('utf-8').strip()
-        output=subprocess.check_output("sudo cat /var/log/httpd/access.log | grep -i 'HTTP' | grep -i '404'", shell=True).decode('utf-8')
+        output = subprocess.check_output("sudo cat /var/log/httpd/access.log | grep -i 'HTTP' | grep -i '404'", shell=True).decode('utf-8')
         if output:
-            usuarios_errores = re.findall(r'user=(\S+)', output)
-            contador_errores = Counter(usuarios_errores)
+            ips_ocurrencias = {}  # Creamos un diccionario vacío para almacenar las ocurrencias de cada IP
+            lines = output.split('\n')
+            for line in lines:
+                if line:
+                    ip = line.split(' ')[0]
+                    # Verificamos si la IP ya está en el diccionario, si no, la agregamos con ocurrencia 1, si sí, incrementamos su ocurrencia
+                    if ip in ips_ocurrencias:
+                        ips_ocurrencias[ip] += 1
+                    else:
+                        ips_ocurrencias[ip] = 1
 
-            print("Se encontraron intentos de inicio de sesión fallidos:")
-
-            for usuario, cantidad_errores in contador_errores.items():
-                # se guarda en el csv
-                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
-                escribir_resultado.escribir_log('Autenticación Fallida',f'Se encontraron {cantidad_errores} errores de autenticacion para {usuario}')
+            for ip,cantidad_errores in ips_ocurrencias.items():
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',ip, cantidad_errores)
+                escribir_resultado.escribir_log('Autenticación Fallida',f'Se encontraron {cantidad_errores} errores de autenticacion para {ip}')
 
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
-                    print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Por seguridad, se bloqueara al usuario")
-                    escribir_resultado.escribir_prevencion(f'Se bloqueo al usuario {usuario} porque se encontraron {cantidad_errores} errores de autenticacion')
+                    print(f"La IP {ip} tuvo {cantidad_errores} errores al cargar una pagina. Por seguridad, se bloqueara la IP")
+                    escribir_resultado.escribir_prevencion(f'Se bloqueo a la IP {ip} porque se encontraron {cantidad_errores} intentos fallidos para conectarse a una pagina')
                           
                     # se bloquea al usuario temporalmente
-                    acciones.bloquear_usuario(usuario)
-
+                    acciones.bloquear_ip(ip)
         else:
-            print("No se encontraron intentos de inicio de sesión fallidos o no hubo más de 5 errores para ningún usuario.")
-
+            print('no se encontraron errores de acceso')
+            escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs','no se encontraron errores de acceso', '')
     except Exception as e:
-        print(f'Ocurrió un error al buscar errores de autenticación: {e}')
+        print(f'Ocurrio un error al buscar errores de cargas de paginas web: {e}')
 
-def buscar_failed_password_secure():
+def buscar_mail_log():
+    email_count = {}
     try:
-        #output = subprocess.check_output(["sudo","grep", "password check failed", "/var/log/secure"]).decode('utf-8')
-        output=subprocess.run(["sudo","grep", "password check failed", "/var/log/secure"], check=True, capture_output=True).stdout.decode('utf-8').strip()
-        if output:
-            usuarios_errores = re.findall(r'user (\S+)', output)
-            contador_errores = Counter(usuarios_errores)
-            print("Se encontraron intentos de inicio de sesión fallidos:")
-            for usuario, cantidad_errores in contador_errores.items():
-                # se guarda en el csv
-                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
-                escribir_resultado.escribir_log('Password Check Failed',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}')
+        result = subprocess.run(['sudo', 'cat', '/var/log/maillog.log'], capture_output=True, text=True, check=True)
+        output = result.stdout.splitlines()
+    except subprocess.CalledProcessError as e:
+        print(f"Error al leer el archivo: {e}")
+        return email_count
 
-                if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
-                    print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")
+    # Procesar el contenido del archivo para contar los correos enviados desde cada dirección
+    for line in output:
+        if 'from=<' in line and 'to=' in line:
+            email_from = line.split('from=<')[1].split('>')[0]
+            email_count[email_from] = email_count.get(email_from, 0) + 1
 
-                    # se cambia la contrasena del usuario
-                    nueva_contrasena=input(f"Ingresa una contrasenha temporal para el usuario: {usuario}")
-                    escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
-                    acciones.cambiar_contrasena(usuario, nueva_contrasena)
-
-                    
-        else:
-            print("No se encontraron intentos de inicio de sesión fallidos o no hubo más de 5 errores para ningún usuario.")
-    except:
-        print('Ocurrio un error al buscar errores de contrasenas')
-
-def buscar_authentication_failure_messages():
-    try:
-        resultado = subprocess.check_output("sudo grep -i 'service=smtp' /var/log/messages | grep -i 'auth failure'", shell=True).decode('utf-8')
-        
-        
-        if resultado.stdout:
-            print("Se encontraron eventos de autenticación fallida:")
-            print(resultado.stdout)
-            # Implementar acciones de respuesta según sea necesario
-    except:
-        print('Ocurrio un error al buscar errores de autenticacion')
-
-def buscar_errores_httpd():
-    try:
-        resultado = subprocess.check_output("sudo grep -i 'HTTP' /var/log/httpd/access_log | grep -i '404' | awk '{print $1, $9}'", shell=True).decode('utf-8')
-        print(resultado)
-        ips=[]
-        for linea in resultado.splitlines():
-            ip=linea.split()[0] # juntamos todas las direcciones ip
-            ips.append(ip)
-        contador_ip=Counter(ips)
-        for ip, cantidad_errores in contador_ip.items():
-            # se guarda en el csv
-            escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',ip, cantidad_errores)
-            escribir_resultado.escribir_log('Anomalias de Trafico', f"La IP {ip} ha generado {cantidad_errores} errores 404 en el registro de acceso.")
-            if cantidad_errores > 10:
-                print(f"La IP {ip} ha generado {cantidad_errores} errores 404 en el registro de acceso.")
-
-                # bloqueamos la ip 
-                acciones.bloquear_ip(ip)
-                escribir_resultado.escribir_prevencion(f'Por seguridad se bloqueo la ip {ip} porque ha generado {cantidad_errores} errores 404 en el registro de acceso.')
-    except:
-        print('Ocurrio un error al buscar errores de cargas de paginas web ')
-
-def buscar_mails_masivos():
-    with open('/var/log/maillog', 'r') as maillog_file:
-        maillog = maillog_file.readlines()
-
-    # Expresión regular para buscar las direcciones de correo electrónico y verificamos que el status sea enviado o en camino
-
-    #email_pattern = re.compile(r'to=<([\w\.-]+@[\w\.-]+)>')
-    email_reggex= re.compile(r'to=<([\w\.-]+@[\w\.-]+)>.* status=(sent|delivered|queued)')
-
-    # Diccionario para almacenar la cantidad de envíos a cada dirección
-    envios_por_direccion = Counter()
-
-    for linea in maillog:
-        # Buscar las direcciones de correo electrónico en cada línea
-        direcciones = email_reggex.findall(linea)
-        for direccion in direcciones:
-            # Incrementar el contador para cada dirección encontrada
-            envios_por_direccion[direccion] += 1
-
-    # Filtrar las direcciones con más de cierta cantidad de envíos (por ejemplo, más de 10 envíos)
-    envios_masivos = {direccion: cantidad for direccion, cantidad in envios_por_direccion.items() if cantidad > 2}
-
-    for direccion, cantidad in envios_masivos.items():
+    for direccion, cantidad in email_count.items():
         # se guarda en el csv
-        escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',direccion, cantidad)
-        escribir_resultado.escribir_log('Seguridad de Correo Electrónico',f"A la dirección {direccion} se le envio {cantidad} correos")
+        escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',f'La direccion de correoc{direccion} envio', f'{cantidad} correos')
+        escribir_resultado.escribir_log('Seguridad de Correo Electrónico',f"La dirección {direccion} le envio {cantidad} correos")
         print(f"Dirección: {direccion}, Cantidad de envíos: {cantidad}")
         if cantidad>50:
             #Bloqueamos el correo
             acciones.bloquear_email(direccion)
             escribir_resultado.escribir_prevencion(f'Se bloque la direccion {direccion} por envio de correos masivos')
 
+def buscar_secure_log():
+    try:
+        result = subprocess.run("sudo cat /var/log/secure.log | grep -i 'pam_unix(smtp:auth): authentication failure'", shell=True, capture_output=True, text=True, check=True)
+        
+        if result:
+            lines = result.stdout.splitlines()
+            user_ocurrencias = {}  # Creamos un diccionario vacío para almacenar las ocurrencias de cada usuario
+            for line in lines:
+                if 'ruser=' in line and 'user=' in line:
+                    semi_line = line.split('ruser=')[1]
+                    if 'user=' in semi_line:
+                        user = semi_line.split('user=')[1].split()[0]
+                        user_ocurrencias[user] = user_ocurrencias.get(user, 0) + 1
 
-def main():
-    #print("Iniciando programa de detección y respuesta de seguridad...")
-    buscar_failed_password_secure()
-    buscar_authentication_failure_messages()
-    buscar_errores_httpd()
-    buscar_mails_masivos()
+            for usuario, cantidad_errores in user_ocurrencias.items():
+                print(f"Se encontraron {cantidad_errores} errores de autenticación para el usuario {usuario}")
+                # se guarda en el csv
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
+                escribir_resultado.escribir_log('Password Check Failed',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}')
+                if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
+                    print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")
+
+                    # se cambia la contrasena del usuario
+                    nueva_contrasena=acciones.cambiar_contrasena(usuario)
+                    escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
+                    
+        else:
+            print("No se encontraron intentos de inicio de sesión fallidos.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error al buscar en secure.log: {e}")
+    
+
+
+def buscar_messages_log():
+    try:
+        result = subprocess.run("cat /var/log/message.log | grep -i 'auth failure' | grep -i 'service=smtp'", shell=True, capture_output=True, text=True, check=True)
+        if result:
+            lines = result.stdout.splitlines()
+            user_ocurrencias = {}  # Creamos un diccionario vacío para almacenar las ocurrencias de cada usuario
+            for line in lines:
+                if 'user=' in line:
+                    user = line.split('user=')[1].split(']')[0]
+                    user_ocurrencias[user] = user_ocurrencias.get(user, 0) + 1
+            for usuario, cantidad_errores in user_ocurrencias.items():
+                print(f"Se encontraron {cantidad_errores} errores de autenticación para el usuario {usuario}")
+                # se guarda en el csv
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
+                escribir_resultado.escribir_log('Password Check Failed',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}')
+                if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
+                    print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")
+
+                    # se cambia la contrasena del usuario
+                    # se cambia la contrasena del usuario
+                    nueva_contrasena=acciones.cambiar_contrasena(usuario)
+                    escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
+        else:
+            print("No se encontraron intentos de inicio de sesión fallido.")
+    except:
+        print('Ocurrio un error al buscar errores de autenticacion')
+
 
 if __name__ == "__main__":
-    main()
+    buscar_access_log()
+    buscar_mail_log()
+    buscar_secure_log()
+    buscar_messages_log()

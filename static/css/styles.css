@@ -3,7 +3,7 @@ body {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 
 }
-
+dd
 p {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     text-align: justify;
@@ -23,7 +23,7 @@ img {
     max-width: 35%;
 }
 
-#pr {
+.principal {
     border: 6px solid #8ecae6;
     background-color: white;
     padding: 35px;
@@ -46,6 +46,10 @@ a {
 .btn:hover {
     background-color: #cdb4db;
     color: white;
+}
+
+.last_item{
+    max-width: 370px;
 }
 
 /* resultado */

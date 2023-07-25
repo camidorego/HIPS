@@ -1,5 +1,7 @@
 import os
 import subprocess
+import random
+import string
 
 # Agrega a la lista negra de emails recipientes
 def bloquear_email(email):
@@ -13,7 +15,11 @@ def bloquear_email(email):
 
 def bloquear_ip(ip):
     os.system(f"sudo iptables -I INPUT -s {ip} -j DROP")
-    os.system("sudo service iptables save")
+    os.system("sudo systemctl restart iptables")
+
+def desbloquear_ip(ip):
+    os.system(f"sudo iptables -D INPUT -s {ip} -j DROP")
+    os.system("sudo systemctl restart iptables")
 
 def bloquear_usuario(nombre_usuario):
     try:
@@ -29,7 +35,14 @@ def bloquear_usuario(nombre_usuario):
     except Exception as e:
         print("Error:", e)
 
-def cambiar_contrasena(nombre_usuario, nueva_contrasenha):
+def generar_contrasena():
+    caracteres_validos = string.ascii_letters + string.digits + string.punctuation
+    for i in range(6):
+        contrasena = ''.join(random.choice(caracteres_validos))
+    return contrasena
+
+def cambiar_contrasena(nombre_usuario):
+    nueva_contrasenha=generar_contrasena()
     try:
         # Ejecutar el comando passwd para cambiar la contraseña del usuario
         proceso = subprocess.Popen(['sudo', 'passwd', nombre_usuario], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -44,10 +57,12 @@ def cambiar_contrasena(nombre_usuario, nueva_contrasenha):
 
         # verificamos si hubo algun error en el cambio de contraseña
         if proceso.returncode == 0:
-            print(f"La contrasenha del usuario {nombre_usuario} ha sido cambiada correctamente.")
+            print(f"La contrasenha del usuario {nombre_usuario} ha sido cambiada a {nueva_contrasenha}.")
+            return nueva_contrasenha
         else:
-            print(f"Error al cambiar la contrasenha del usuario {nombre_usuario}.")
-            print("Mensaje de error:", error.decode().strip())
+            e=error.decode().strip()
+            print(f"Error al cambiar la contrasenha del usuario {nombre_usuario}: {e}")
+            return None
 
     except Exception as e:
         print("Error:", e)
