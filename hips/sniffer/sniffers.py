@@ -24,18 +24,20 @@ import acciones
 def detectar_sniffers():
     sniffers_conocidos = ["tcpdump", "tshark", "wireshark"]
     sniffers=[]
-    
+    # se ejecuta el comando para ver si alguno de los programas se esta ejecutando
     for sniffer in sniffers_conocidos:
         comando = f"ps -aux | grep {sniffer} | grep -v grep |  awk '{{print $1, $2, $NF}}'"
         resultado = subprocess.run(comando, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         print(resultado)
 
+        # si se encontro un programa en ejecucion se guarda la informacion en el csv y se genera la alarma
         if resultado.returncode != 0:
             print(f'Se ha detectado el proceso {sniffer} en ejecución. Esto podría indicar la presencia de un sniffer.')
             escribir_resultado.guardar_resultado_csv('sniffer','sniffers',f'Se detecto el proceso en ejecucion {sniffer}','. Puede indicar la presencia de un sniffer')
             escribir_resultado.escribir_log('Posible sniffer',f"Se ha detectado el proceso {sniffer} en ejecución. Esto podría indicar la presencia de un sniffer.")
             sniffer.append(sniffer)
 
+        # si no se encontro ningun programa corriendo, tambien se guarda el resultado en un csv
         else:
             print(f"No se encontro ningun proceso '{sniffer}'. El sistema es seguro")
             escribir_resultado.guardar_resultado_csv('sniffer','sniffers',f"No se encontro ningun proceso '{sniffer}'. El sistema es seguro",'')
@@ -47,12 +49,15 @@ def detectar_sniffers():
 
 
 def modo_promiscuo(): 
+    # se ejecuta el codigo para saber si el sistema entro en modo promiscuo
     resultado = os.popen("sudo ip a show enp0s3 | grep -i promis").read()
+    # se analiza el resultado y se guarda en el csv y se genera la alarma
     if resultado!='':
         print(resultado)
         print('Puede que el sistema haya entrado en modo promiscuo segun los resultados')
         escribir_resultado.guardar_resultado_csv('sniffer','sniffers','Puede que el sistema haya entrado en modo promiscuo segun los resultados',resultado)
         escribir_resultado.escribir_log('Posible sniffer',f'Puede que el sistema haya entrado en modo promiscuo segun los resultados: {resultado}')
+        # se envia un correo al administrador
         acciones.enviar_mail('Posible sniffer', 'Sistema en modo promiscup',f'Puede que el sistema haya entrado en modo promiscuo segun los resultados: {resultado}')
     else:
         print(resultado)

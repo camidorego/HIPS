@@ -1,6 +1,9 @@
 import psycopg2 
-
+import os
 import subprocess
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def conectar_bd():
     try:
@@ -8,10 +11,8 @@ def conectar_bd():
         conexion= psycopg2.connect(
                 host="localhost",
                 database="hips",
-                user="hips",
-                password="12345")
-                #user=os.environ['DB_USERNAME'],
-                #password=os.environ['DB_PASSWORD'])
+                user=os.getenv('DB_USERNAME'),
+                password=os.getenv('DB_PASSWD'))
         
     except psycopg2.Error as e:
         print(f"Error al conectar a la bd: {e}")
@@ -57,9 +58,6 @@ def crear_tabla_firmas():
         
         # creamos el objeto cursor para manipular la bd
         cursor = conexion.cursor()
-        
-        # cursor.execute("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'firmas');")
-        # tabla_existe = cursor.fetchone()[0]
 
         # creamos la tabla firmas
         cursor.execute('DROP TABLE IF EXISTS firmas;')
@@ -70,18 +68,6 @@ def crear_tabla_firmas():
         cursor.execute("INSERT INTO firmas(nombre_archivo, firma) VALUES (%s, %s), (%s, %s);",
                 ('/etc/passwd', firma1, '/etc/shadow', firma2))
         print('Se inserto')
-
-
-        # if not tabla_existe:
-        #     # Si la tabla no existe, la creamos
-        #     cursor.execute("CREATE TABLE firmas(nombre_archivo varchar(50), firma varchar(64));")
-        #     print("Tabla 'firmas' creada correctamente.")
-        #     tabla_existe=True
-        
-        #     #se insertan las firmas
-        #     cursor.execute("INSERT INTO firmas(nombre_archivo, firma) VALUES (%s, %s), (%s, %s);",
-        #         ('/etc/passwd', firma1, '/etc/shadow', firma2))
-        #     print('Se inserto')
         
         # guardamos los cambios y cerramos la conexion
         conexion.commit()
@@ -90,7 +76,6 @@ def crear_tabla_firmas():
         
     except psycopg2.Error as e:
         print(f"Error al crear la tabla firmas: {e}")
-    return 0
 
 if __name__=="__main__":
     crear_tabla_users()

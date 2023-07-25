@@ -37,6 +37,7 @@ def verificar_tmp():
         if os.path.isfile(filepath) and ver_extension(filename):
             suspicious_files.append(filename)
     
+    # se analiza el resultado
     if not suspicious_files:
         print("No se encontraron archivos sospechosos en /tmp.")
         escribir_resultado.guardar_resultado_csv('tmp','verificar_tmp',"No se encontraron archivos sospechosos en /tmp.",'')

@@ -15,7 +15,6 @@ import escribir_resultado
 
 try:
     
-
     # se obtienen los usuarios conectados y sus respectivos puertos. Se convierte todo a texto con decode
     salida_texto = subprocess.check_output("who -H | awk '{print $1, $5}'", shell=True).decode('utf-8')
 
@@ -27,12 +26,9 @@ try:
     # Creamos una lista con tuplas (nombre_usuario, direccion_ip)
     usuarios_ip = [tuple(linea.strip().split()) for linea in salida_array]
 
-    
+    # se guarda en un csv
     for usuario,ip in usuarios_ip:
         escribir_resultado.guardar_resultado_csv('usuarios_conectados','usuarios',usuario,ip)
-        
-
-    
 
 except:
     print('Ocurrio un error')

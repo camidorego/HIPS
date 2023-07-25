@@ -74,26 +74,33 @@ import smtplib
 import ssl
 import configparser
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 SERVIDOR = "smtp-mail.outlook.com"
 path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
 config = configparser.ConfigParser()
 config.read(os.path.join(path, 'database.ini'))
-HIPS_CORREO_ADMIN = 'camiladoregobarros@gmail.com' #config['ADMIN']['HIPS_CORREO_ADMIN']
-HIPS_CORREO = "hips_dorego@outlook.com"
-HIPS_CONTRA = "hips2023"
 SSL_context = ssl.create_default_context()
 port = 587
 msg = MIMEMultipart() 
 
+# se obtiene la informacion
+EMAIL_HIPS=os.getenv('EMAIL_HIPS')
+EMAIL_HIPS_PASSWD=os.getenv('EMAIL_HIPS_PASSWD')
+EMAIL_ADMI=os.getenv('EMAIL_ADMI')
+
+# se establece la conexion con el servidor de correo y se manda desde la cuenta de mail del hips
 def enviar_mail(alarma, asunto, msje):
-    msg['From']= HIPS_CORREO
-    msg['To']= HIPS_CORREO_ADMIN
+    msg['From']= EMAIL_HIPS
+    msg['To']= EMAIL_ADMI
     msg['Subject']= 'Nivel: ' + alarma + ' | '  + 'Asunto: ' + asunto 
     msg.attach(MIMEText(msje, "plain"))
     text = msg.as_string()
     with smtplib.SMTP(SERVIDOR, port) as server:
         server.starttls(context=SSL_context)
-        server.login(HIPS_CORREO, HIPS_CONTRA)
-        server.sendmail(HIPS_CORREO, HIPS_CORREO_ADMIN, text)
+        server.login(EMAIL_HIPS, EMAIL_HIPS_PASSWD)
+        server.sendmail(EMAIL_HIPS, EMAIL_ADMI, text)
     server.close()
 

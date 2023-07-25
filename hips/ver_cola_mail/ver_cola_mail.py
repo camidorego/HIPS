@@ -21,7 +21,7 @@ import revisar_logs
 
 def tamanho_cola():
     try:
-        # Ejecuta el comando "mailq" y obtiene la salida
+        # Ejecuta el comando "mailq" para ver el tamanho de la cola
         output = subprocess.check_output(['mailq'], stderr=subprocess.STDOUT, text=True)
     except subprocess.CalledProcessError as e:
         # Si hay un error al ejecutar "mailq", muestra un mensaje de error
@@ -36,6 +36,7 @@ def tamanho_cola():
 def main():
     cola = tamanho_cola()
     if cola is not None:
+        # se muestra el tamanho de la cola y se guarda en un csv
         print(f"Tamaño de la cola de correos: {cola} mensajes.")
         escribir_resultado.guardar_resultado_csv('ver_cola_mail','ver_cola_mail','tamanho de cola de mail',cola)
         
