@@ -175,16 +175,27 @@ En el navegador abre el siguiente link
     http://127.0.0.1:5000
 
 Te aparecera la pagina para logearte
-   ![login](https://drive.google.com/file/d/18MhVdEntySS-iw95OP14HXiTlBVpJvLp/view?usp=sharing)
+<p align="center">
+  <a href="">
+    <img src="./static/images/login.png" alt="Login" width="1600" height="500">
+  </a>
+</p>
 
 
 Puedes crear una cuenta. Aprieta el boton de Crear Cuenta y te llevara a la pagina para registrarte
-![registro](https://drive.google.com/file/d/1caCzicZxEzQNRMgFhyRRM9LQ23L_TO-w/view?usp=drive_link)
+<p align="center">
+  <a href="">
+    <img src="./static/images/register.png" alt="Register" width="1600" height="500">
+  </a>
+</p>
 
 Una vez que completaste tu informacion se te llevara nuevamente a la pagina para que puedas logearte con el username y contraseña que recien creaste
 
 Luego te aparecera el menu. Elige lo que quieres controlar y listo!
-![menu](https://drive.google.com/file/d/11rqCIcObpJm7DmkNRPLXwCO5j-QSmofn/view?usp=drive_link)
+<p align="center">
+  <a href="">
+    <img src="./static/images/menu.png" alt="Menu" width="1600" height="500">
+</p>
 
 
 ## Informacion del Programador
