@@ -3,7 +3,7 @@ import subprocess
 import random
 import string
 
-# Agrega a la lista negra de emails recipientes
+# Agrega a la lista negra de emails 
 def bloquear_email(email):
     try:
         comando_para_agregar_en_lista_negra = f"sudo echo '{email} REJECT' >> /etc/postfix/sender_access"
@@ -67,5 +67,33 @@ def cambiar_contrasena(nombre_usuario):
     except Exception as e:
         print("Error:", e)
 
-def enviar_mail(asunto, mensaje):
-    print('enviando')
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+import smtplib
+import ssl
+import configparser
+
+SERVIDOR = "smtp-mail.outlook.com"
+path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
+config = configparser.ConfigParser()
+config.read(os.path.join(path, 'database.ini'))
+HIPS_CORREO_ADMIN = 'camiladoregobarros@gmail.com' #config['ADMIN']['HIPS_CORREO_ADMIN']
+HIPS_CORREO = "hips_dorego@outlook.com"
+HIPS_CONTRA = "hips2023"
+SSL_context = ssl.create_default_context()
+port = 587
+msg = MIMEMultipart() 
+
+def enviar_mail(alarma, asunto, msje):
+    msg['From']= HIPS_CORREO
+    msg['To']= HIPS_CORREO_ADMIN
+    msg['Subject']= 'Nivel: ' + alarma + ' | '  + 'Asunto: ' + asunto 
+    msg.attach(MIMEText(msje, "plain"))
+    text = msg.as_string()
+    with smtplib.SMTP(SERVIDOR, port) as server:
+        server.starttls(context=SSL_context)
+        server.login(HIPS_CORREO, HIPS_CONTRA)
+        server.sendmail(HIPS_CORREO, HIPS_CORREO_ADMIN, text)
+    server.close()
+

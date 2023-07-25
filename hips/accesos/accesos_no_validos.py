@@ -14,6 +14,12 @@ sys.path.append(parent_dir)
 
 import escribir_resultado
 
+# directorio controlar_logs
+logs_dir = os.path.join(parent_dir, 'controlar_logs')
+sys.path.append(logs_dir)
+
+import acciones
+
 def buscar_acceso_indebido():
     try:
         resultado = subprocess.run("sudo cat /var/log/secure | grep -i 'sshd' | grep -i 'Failed password'", shell=True, capture_output=True, text=True).stdout.split('\n')[:-1]
@@ -33,6 +39,7 @@ def buscar_acceso_indebido():
         if count > 8:
             escribir_resultado.guardar_resultado_csv('accesos','accesos_no_validos',f'Se encontraron {count} intentos de acceso',f'desde {ip}')
             escribir_resultado.escribir_log('Acceso Indebido', f'Se encontraron {count} intentos de acceso desde {ip}')
+            acciones.enviar_mail('Alarma!','Acceso Indebido',f'Se encontraron {count} intentos de acceso desde {ip}')
                
 
 if __name__ == "__main__":

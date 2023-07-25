@@ -11,7 +11,13 @@ parent_dir = os.path.dirname(current_dir)
 # agregamos el path /hips a los directorios donde se buscaran los modulos
 sys.path.append(parent_dir)
 
+# directorio controlar_logs
+logs_dir = os.path.join(parent_dir, 'controlar_logs')
+
+sys.path.append(logs_dir)
+
 import escribir_resultado
+import revisar_logs
 
 def tamanho_cola():
     try:
@@ -36,7 +42,7 @@ def main():
         # si la cola es muy grande se revisa si hay envios masivos a un mismo destinatario y se bloquea
         if cola>50:
             escribir_resultado.escribir_log('Cola de Correo',f'tamanho masivo de cola de mail {cola}')
-            escribir_resultado.revisar_logs.buscar_mails_masivos()
+            revisar_logs.buscar_mails_masivos()
             
 
 if __name__ == "__main__":

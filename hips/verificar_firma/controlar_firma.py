@@ -9,11 +9,18 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 # directorio hips
 parent_dir = os.path.dirname(current_dir)
 
+# directorio controlar_logs
+logs_dir = os.path.join(parent_dir, 'controlar_logs')
+
+sys.path.append(logs_dir)
+
 # agregamos el path /hips a los directorios donde se buscaran los modulos
 sys.path.append(parent_dir)
 
+
 import init_db
 import escribir_resultado
+import acciones
 
 def comparar_firma():
     path_archivo1="/etc/passwd"
@@ -47,13 +54,15 @@ def comparar_firma():
 
                 escribir_resultado.guardar_resultado_csv('verificar_firma','controlar_firma',path_archivo1,'fue modificado')
                 escribir_resultado.escribir_log('modificacion de archivo binario', f'El archivo {path_archivo1} ha sido modificado')
+                acciones.enviar_mail('Alarma!','modificacion de archivo binario',f'El archivo {path_archivo1} ha sido modificado')
             elif hash_actual2!=hash_original2[0]:
-                print("El archivo {path_archivo2} ha sido modificado.")
+                print("El archivo {path_archivo2} ha sido modificado.",f'El archivo {path_archivo1} ha sido modificado')
                 
                 # se actualiza la base de datos
                 cursor.execute("UPDATE firmas SET firma = %s WHERE nombre_archivo = %s;", (hash_actual2, path_archivo2))
                 escribir_resultado.guardar_resultado_csv('verificar_firma','controlar_firma',path_archivo2,'fue modificado')
                 escribir_resultado.escribir_log('modificacion de archivo binario', f'El archivo {path_archivo2} ha sido modificado')
+                acciones.enviar_mail('Alarma!','modificacion de archivo binario',f'El archivo {path_archivo2} ha sido modificado')
 
             else:
                 print("Todo bien")

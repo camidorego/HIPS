@@ -12,6 +12,12 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 import escribir_resultado
 
+# directorio controlar_logs
+logs_dir = os.path.join(parent_dir, 'controlar_logs')
+sys.path.append(logs_dir)
+
+import acciones
+
 def lista_usuarios():
     # obtenemos la lista de usuarios
     with open('/etc/passwd') as lista_usuarios:
@@ -51,7 +57,9 @@ def main():
             escribir_resultado.escribir_log('Cron', f'Se encontro el archivo de cron {cron_archivo} ejecutandose para el usuario {user}')
             
         print("Se le notificara al administrador")
-        escribir_resultado.escribir_prevencion(f'Se envio un correo al administrador porque se encontro el archivo de cron {cron_archivo} ejecutandose para el usuario {user}')
+        escribir_resultado.escribir_prevencion(f'Se envio un correo al administrador porque se encontraron los siguientes archivos cron en ejecucion -> {archivos_cron}')
+        acciones.enviar_mail('Alarma!','Archivos Cron en ejecucion', f'Se encontraron los siguientes archivos cron en ejecucion -> {archivos_cron}')
+
         #enviar correo al administrador
 
         

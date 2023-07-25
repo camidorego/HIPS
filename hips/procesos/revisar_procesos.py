@@ -12,6 +12,12 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 import escribir_resultado
 
+# directorio controlar_logs
+logs_dir = os.path.join(parent_dir, 'controlar_logs')
+sys.path.append(logs_dir)
+
+import acciones
+
 def procesos_mucha_memoria(memory_threshold_mb, time_threshold_seconds):
     high_memory_processes = []
 
@@ -51,6 +57,7 @@ def main():
 
         kill_processes(high_memory_processes)
         escribir_resultado.escribir_prevencion(f"Se termino el proceso por alto consumo de memoria -> PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%")
+        acciones.enviar_mail('Alarma!','Rendimiento del sistema', f'Se terminaron los procesos {high_memory_processes} porque consumian demasiada memoria')
 
         
 

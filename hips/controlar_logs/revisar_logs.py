@@ -38,6 +38,7 @@ def buscar_access_log():
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
                     print(f"La IP {ip} tuvo {cantidad_errores} errores al cargar una pagina. Por seguridad, se bloqueara la IP")
                     escribir_resultado.escribir_prevencion(f'Se bloqueo a la IP {ip} porque se encontraron {cantidad_errores} intentos fallidos para conectarse a una pagina')
+                    acciones.enviar_mail('Autenticación Fallida', 'Demasiados intentos fallidos para conectarse a una pagina',f'Se encontraron {cantidad_errores} errores de autenticacion para {ip}. Por seguridad se bloqueo a la IP {ip}')
                           
                     # se bloquea al usuario temporalmente
                     acciones.bloquear_ip(ip)
@@ -71,6 +72,7 @@ def buscar_mail_log():
             #Bloqueamos el correo
             acciones.bloquear_email(direccion)
             escribir_resultado.escribir_prevencion(f'Se bloque la direccion {direccion} por envio de correos masivos')
+            acciones.enviar_mail('Seguridad de Correo Electrónico', 'envio masivo de correos',f"La dirección {direccion} le envio {cantidad} correos. Por seguridad se bloque la direccion {direccion}")
 
 def buscar_secure_log():
     try:
@@ -91,12 +93,14 @@ def buscar_secure_log():
                 # se guarda en el csv
                 escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
                 escribir_resultado.escribir_log('Password Check Failed',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}')
+                
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
                     print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")
 
                     # se cambia la contrasena del usuario
                     nueva_contrasena=acciones.cambiar_contrasena(usuario)
                     escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
+                    acciones.enviar_mail('Password Check Failed', 'muchos intentos fallidos de inicio de sesion',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}. Por seguridad se cambio la contrasenha del usuario {usuario} a {nueva_contrasena}')
                     
         else:
             print("No se encontraron intentos de inicio de sesión fallidos.")
@@ -127,6 +131,8 @@ def buscar_messages_log():
                     # se cambia la contrasena del usuario
                     nueva_contrasena=acciones.cambiar_contrasena(usuario)
                     escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
+                    acciones.enviar_mail('Password Check Failed', 'Demasiados intentos fallidos de inicio de sesion',f"Se encontraron {cantidad_errores} errores de autenticación para el usuario {usuario}. Por seguridad se cambio la contrasenha del usuario {usuario} a {nueva_contrasena}")
+                    
         else:
             print("No se encontraron intentos de inicio de sesión fallido.")
     except:
