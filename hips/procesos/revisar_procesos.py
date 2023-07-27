@@ -18,53 +18,58 @@ sys.path.append(logs_dir)
 
 import acciones
 
-def procesos_mucha_memoria(memory_threshold_mb, time_threshold_seconds):
-    high_memory_processes = []
-    # cada proceso en ejecucion se revisa cuanto de memoria consume
-    for process in psutil.process_iter(['pid', 'name', 'memory_percent', 'create_time']):
-        # de acuerdo a lo que se paso como parametro de lo que se considera un uso excesivo de memoria
-        if process.info['memory_percent'] > memory_threshold_mb:
-            elapsed_time_seconds = time.time() - process.info['create_time']
-            if elapsed_time_seconds >= time_threshold_seconds:
-                high_memory_processes.append(process.info)
+def kill_process(process_info):
+    # Terminates the process passed as a parameter
+    try:
+        pid = process_info['pid']
+        process = psutil.Process(pid)
+        process.terminate()
+        print(f"Proceso {process_info['name']} (PID: {pid}) terminado.")
+    except psutil.NoSuchProcess:
+        print(f"Proceso {process_info['name']} (PID: {pid}) no encontrado.")
 
-    return high_memory_processes
+def revisar_procesos():
+    procesos_terminados = []
 
-def kill_processes(process_list):
-    # se terminan los procesos que se pasaron como parametro
-    for process_info in process_list:
-        try:
-            pid = process_info['pid']
-            process = psutil.Process(pid)
-            process.terminate()
-            print(f"Proceso {process_info['name']} (PID: {pid}) terminado.")
-        except psutil.NoSuchProcess:
-            print(f"Proceso {process_info['name']} (PID: {pid}) no encontrado.")
+    try:
+        for process in psutil.process_iter(['pid', 'name', 'memory_percent', 'create_time']):
+            
+            if process_name in ('systemd', 'gnome-s+', 'gnome-shell','bash', 'chrome','python3','flask'):
+                # Ignorar los procesos del sistema
+                continue
 
-def main():
-    memory_threshold_mb = 20  # Porcentaje de memoria a partir del cual se considera elevado
-    time_threshold_seconds = 300  # Tiempo en segundos a partir del cual se considera consumo excesivo
+            if memory_percent > 10.0:
+                process_name = process.info['name']
+                process_pid = process.info['pid']
+                memory_percent = process.info['memory_percent']
+                create_time = process.info['create_time']
+                elapsed_time_seconds = time.time() - create_time
 
-    high_memory_processes = procesos_mucha_memoria(memory_threshold_mb, time_threshold_seconds)
-    # se analiza el resultado y se escribe en el csv
-    if not high_memory_processes:
-        print("No se encontraron procesos con consumo elevado de memoria.")
-        escribir_resultado.guardar_resultado_csv('procesos','revisar_procesos',"No se encontraron procesos con consumo elevado de memoria.",'')
-    else:
-        print("Procesos con consumo elevado de memoria:")
-        
-        for process_info in high_memory_processes:
-            print(f" - PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%")
-            escribir_resultado.guardar_resultado_csv('procesos','revisar_procesos',f" - PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%",'')
-            escribir_resultado.escribir_log('Proceso consumiendo mucha memoria',f" - PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%")
-        # se terminan los procesos que consumen mucha energia
-        kill_processes(high_memory_processes)
-        # se informan sobre los procesos terminados
-        escribir_resultado.escribir_prevencion(f"Se termino el proceso por alto consumo de memoria -> PID: {process_info['pid']}, Nombre: {process_info['name']}, Uso de memoria: {process_info['memory_percent']}%")
-        # se le manda un mail al administrador
-        acciones.enviar_mail('Alarma!','Rendimiento del sistema', f'Se terminaron los procesos {high_memory_processes} porque consumian demasiada memoria')
+                print(f"Proceso: {process_name} (PID: {process_pid})")
+                print(f"  Uso de Memoria: {memory_percent:.2f}%")
+                print(f"  Tiempo de ejecución: {elapsed_time_seconds:.2f} segundos")
+                print("-" * 30)
 
-        
+                # Guardar la información en los logs (asumiendo que las funciones existen)
+                escribir_resultado.guardar_resultado_csv('procesos', 'revisar_procesos', f" - PID: {process_pid}, Nombre: {process_name}, Uso de memoria: {memory_percent:.2f}%, Tiempo: {elapsed_time_seconds:.2f} segundos", '')
+                escribir_resultado.escribir_log('Proceso consumiendo mucha memoria', f" - PID: {process_pid}, Nombre: {process_name}, Uso de memoria: {memory_percent:.2f}%, Tiempo: {elapsed_time_seconds:.2f} segundos")
+
+                if elapsed_time_seconds > 10:
+                    # Aquí debería estar definida la función kill_process para terminar el proceso
+                    kill_process(process.info)
+                    escribir_resultado.guardar_resultado_csv('procesos', 'revisar_procesos', f"Se terminó el proceso {process_name} porque consumía el {memory_percent:.2f}% de memoria por {elapsed_time_seconds:.2f} segundos", '')
+                    procesos_terminados.append(process_name)
+                    escribir_resultado.escribir_prevencion(f"Se terminó el proceso por alto consumo de memoria -> PID: {process_pid}, Nombre: {process_name}, Uso de memoria: {memory_percent:.2f}%, Tiempo: {elapsed_time_seconds:.2f} segundos")
+
+        if procesos_terminados:
+            # Se le informa al administrador
+            acciones.enviar_mail('Alarma!', 'Rendimiento del sistema', f'Se terminaron los procesos {", ".join(procesos_terminados)} porque consumían demasiada memoria')
+        else:
+            escribir_resultado.guardar_resultado_csv('procesos', 'revisar_procesos', 'No se encontraron procesos que consumen mucha memoria', '')
+
+    except psutil.Error as e:
+        print(f"Ocurrió un error: {e}")
 
 if __name__ == "__main__":
-    main()
+    revisar_procesos()
+

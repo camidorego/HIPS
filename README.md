@@ -2,13 +2,13 @@
 ## Acerca de este Proyecto
 Este es un proyecto desarrollado para la materia Sistemas Operativos 2 de la Universidad Católica de Asunción con el propósito de aprender a defender un sistemas de posibles intrusos y todo lo que ello implica.
 
-Los puntos cubridos en el sistema son:
+Los puntos cubiertos en el sistema son:
 
- - Verificar archivos binarios de sistema y en particular modificaciones realizadas
-en el archivo /etc/passwd o /etc/shadow.
+ - Verificar archivos binarios de sistema, y en particular modificaciones realizadas
+a los archivo /etc/passwd o /etc/shadow.
  - Verificar los usuarios conectados al sistema y sus respectivos origenes.
  - Verificar si hay sniffers en el sistema:
-	 - Se verifica se estan ejecutando herramientas de acaptura de paquetes conocidas como 'tcpdump', 'ethereal', 'wireshark'
+	 - Se verifica si estan en ejecucion herramientas de acaptura de paquetes conocidas como 'tcpdump', 'ethereal', 'wireshark'
 	 - Se verifica si el sistema entro en modo promiscuo
  - Se examinan los logs del sistema en busca de patrones de accesos indebidos. Los logs examinados son:
 	 - /var/log/secure
@@ -18,8 +18,8 @@ en el archivo /etc/passwd o /etc/shadow.
  - Se verifica el tamaño de la cola de mail en busca de envios de correos masivos desde una misma direccion
  - Se revisa el consumo de los recursos del sistema, controlando los procesos que consumen demasiada memoria
  - En el directorio /tmp buscamos archivos sospechosos que podrian estar ejecutandose
- - Controlamos la presencia de Ataquea Distribuidoa de Denegación de Servicio
- - Examinamos que los archivos en ejecutacion como cron
+ - Controlamos la presencia de Ataques Distribuidos de Denegación de Servicio
+ - Examinamos que los archivos en ejecucion como cron
  - Se verifican intentos de accesos indebidos
  
 
@@ -40,7 +40,7 @@ en el archivo /etc/passwd o /etc/shadow.
 
 #### Python3
 
-Instalar instalar Python3 y Pip3
+Instalar Python3 y Pip3
 
     sudo yum install python3
     sudo yum install python3-pip
@@ -92,7 +92,7 @@ Le asgnamos los permisos necesarios al rol hips
     GRANT ALL PRIVILEGES ON DATABASE hips TO hips;
 
 #### IPTables
-Se para el servicio de firewalld
+Detenemos el servicio de firewalld
 
     sudo systemctl stop firewalld
 Se desabilita
@@ -124,7 +124,7 @@ Verificamos que este funcionando
 Descarga el programa en tu Desktop.
 
     git clone https://github.com/camidorego/HIPS.git
-Entra dentro del directorio y establece la contrasena que elegiste para la base de datos
+Ingresa dentro del directorio y establece la contrasena que elegiste para la base de datos
 
     cd HIPS
     nano .env
@@ -147,7 +147,7 @@ Estando como usuario root
     mkdir /var/log/hips
     mkdir /var/log/hips/resultados
     mkdir /var/log/hips/resultados/accesos
-    mkdir /var/log/hips/resultados/controlar?logs
+    mkdir /var/log/hips/resultados/controlar_logs
     mkdir /var/log/hips/resultados/cron
     mkdir /var/log/hips/resultados/ddoc
     mkdir /var/log/hips/resultados/procesos
@@ -174,7 +174,7 @@ En el navegador abre el siguiente link
 
     http://127.0.0.1:5000
 
-Te aparecera la pagina para logearte
+Te aparecera la pagina para loggearte
 <p align="center">
   <a href="">
     <img src="./static/img/login.png" alt="Login" width="1200" height="500">
@@ -182,14 +182,14 @@ Te aparecera la pagina para logearte
 </p>
 
 
-Puedes crear una cuenta. Aprieta el boton de Crear Cuenta y te llevara a la pagina para registrarte
+Puedes crear una cuenta haciendo click en el boton de 'Crear Cuenta' y te llevara a la pagina para que puedas registrarte
 <p align="center">
   <a href="">
     <img src="./static/img/register.png" alt="Register" width="1200" height="500">
   </a>
 </p>
 
-Una vez que completaste tu informacion se te llevara nuevamente a la pagina para que puedas logearte con el username y contraseña que recien creaste
+Una vez que completaste tu informacion se te llevara nuevamente a la pagina para que puedas loggearte con el username y contraseña que recien creaste
 
 Luego te aparecera el menu. Elige lo que quieres controlar y listo!
 <p align="center">

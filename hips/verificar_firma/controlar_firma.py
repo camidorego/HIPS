@@ -46,7 +46,7 @@ def comparar_firma():
         
         # comparamos los hashes para ver si los archivos fueron modificados
         if hash_actual1!=hash_original1[0]:
-            print("El archivo {path_archivo1} ha sido modificado.")
+            print(f"El archivo {path_archivo1} ha sido modificado.")
             
             # se actualiza la base de datos
             cursor.execute("UPDATE firmas SET firma = %s WHERE nombre_archivo = %s;", (hash_actual1, path_archivo1))
@@ -54,8 +54,12 @@ def comparar_firma():
             escribir_resultado.guardar_resultado_csv('verificar_firma','controlar_firma',path_archivo1,'fue modificado')
             escribir_resultado.escribir_log('modificacion de archivo binario', f'El archivo {path_archivo1} ha sido modificado')
             acciones.enviar_mail('Alarma!','modificacion de archivo binario',f'El archivo {path_archivo1} ha sido modificado')
+        else:
+            print(f"El archivo {path_archivo1} sigue igual.")
+            escribir_resultado.guardar_resultado_csv('verificar_firma','controlar_firma',path_archivo1,'sigue igual')
+
         if hash_actual2!=hash_original2[0]:
-            print("El archivo {path_archivo2} ha sido modificado.",f'El archivo {path_archivo1} ha sido modificado')
+            print(f"El archivo {path_archivo2} ha sido modificado.")
             
             # se actualiza la base de datos
             cursor.execute("UPDATE firmas SET firma = %s WHERE nombre_archivo = %s;", (hash_actual2, path_archivo2))
@@ -64,8 +68,8 @@ def comparar_firma():
             acciones.enviar_mail('Alarma!','modificacion de archivo binario',f'El archivo {path_archivo2} ha sido modificado')
 
         else:
-            print("Todo bien")
-            escribir_resultado.guardar_resultado_csv('verificar_firma','controlar_firma','ningun archivo','fue modificado')
+            print(f"El archivo {path_archivo2} sigue igual.")
+            escribir_resultado.guardar_resultado_csv('verificar_firma','controlar_firma',path_archivo2,'sigue igual')
         
         # se guardan los cambios de la base de datos y se cierra la conexion
         conexion.commit()

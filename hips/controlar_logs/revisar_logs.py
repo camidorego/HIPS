@@ -32,7 +32,7 @@ def buscar_access_log():
                         ips_ocurrencias[ip] = 1
 
             for ip,cantidad_errores in ips_ocurrencias.items():
-                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',ip, cantidad_errores)
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',f'En access_log se encontro que la IP {ip}', f' tuvo {cantidad_errores} intentos fallidos al conectarse una pagina web')
                 escribir_resultado.escribir_log('Autenticación Fallida',f'Se encontraron {cantidad_errores} errores de autenticacion para {ip}')
 
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
@@ -65,7 +65,7 @@ def buscar_mail_log():
 
     for direccion, cantidad in email_count.items():
         # se guarda en el csv
-        escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',f'La direccion de correoc{direccion} envio', f'{cantidad} correos')
+        escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',f'La direccion de correo {direccion} envio', f' {cantidad} correos')
         escribir_resultado.escribir_log('Seguridad de Correo Electrónico',f"La dirección {direccion} le envio {cantidad} correos")
         print(f"Dirección: {direccion}, Cantidad de envíos: {cantidad}")
         if cantidad>50:
@@ -91,7 +91,7 @@ def buscar_secure_log():
             for usuario, cantidad_errores in user_ocurrencias.items():
                 print(f"Se encontraron {cantidad_errores} errores de autenticación para el usuario {usuario}")
                 # se guarda en el csv
-                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}','')
                 escribir_resultado.escribir_log('Password Check Failed',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}')
                 
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
@@ -122,7 +122,7 @@ def buscar_messages_log():
             for usuario, cantidad_errores in user_ocurrencias.items():
                 print(f"Se encontraron {cantidad_errores} errores de autenticación para el usuario {usuario}")
                 # se guarda en el csv
-                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',usuario, cantidad_errores)
+                escribir_resultado.guardar_resultado_csv('controlar_logs', 'revisar_logs',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}','')
                 escribir_resultado.escribir_log('Password Check Failed',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}')
                 if cantidad_errores > 10: # si hubieron mas de 10 intentos fallidos de inicio de sesion, se cambia la contrasena de usuario
                     print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")

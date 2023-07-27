@@ -14,8 +14,12 @@ def bloquear_email(email):
         print("hubo un problema en cargar un email en la lista negra")
 
 def bloquear_ip(ip):
-    os.system(f"sudo iptables -I INPUT -s {ip} -j DROP")
-    os.system("sudo systemctl restart iptables")
+    try:
+        os.system(f"sudo iptables -I INPUT -s {ip} -j DROP")
+        os.system("sudo systemctl restart iptables")
+        print(f"IP {ip} bloqueada correctamente.")
+    except Exception as e:
+            print(f"Error al bloquear la IP: {str(e)}")
 
 def desbloquear_ip(ip):
     os.system(f"sudo iptables -D INPUT -s {ip} -j DROP")
