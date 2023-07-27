@@ -18,7 +18,7 @@ a los archivo /etc/passwd y /etc/shadow.
  - Se verifica el tamaño de la cola de mail en busca de envíos masivos de correos desde una misma dirección
  - Se controla el rendimiento del sistema, revisando los procesos que consumen demasiada memoria y el tiempo que llevan ejecutándose. Si es mucho, se decide terminar el proceso
  - Se buscan archivos sospechosos en el directorio /tmp que podrían estar ejecutándose
- - Controlamos la presencia de Ataques Distribuidos de Denegación de Servicio (DDoC)
+ - Controlamos la presencia de Ataques Distribuidos de Denegación de Servicio (DDos)
  - Se revisan los archivos que se ejecutan con Cron
  - Se buscan intentos repetitivos de accesos indebidos
  
