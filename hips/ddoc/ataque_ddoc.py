@@ -43,7 +43,7 @@ def buscar_ddoc():
                 escribir_resultado.escribir_prevencion(f'Se bloqueara la IP {ip_pair[0]} por seguridad')
                 acciones.bloquear_ip({ip_pair[0]})
         # se le informa al administrador
-        acciones.enviar_mail('Alarma!','Ataque Distribuido de Denegación de Servicio(DDoC)',f'Se detectaron varias ocurrencias de intento de conexion de una ip a otra->{ips}')
+        acciones.enviar_mail('Alarma!','Se encontro posuble Ataque Distribuido de Denegación de Servicio(DDoC)',f'Se encontraron varias ocurrencias de intento de conexion de una ip a otra->{ips}')
     else:
         print('No se encontraron ataques DDoC')
         escribir_resultado.guardar_resultado_csv('ddoc','ataque_ddoc','No se encontraron ataques DDoC','')

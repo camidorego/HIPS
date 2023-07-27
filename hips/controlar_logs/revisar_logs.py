@@ -100,7 +100,7 @@ def buscar_secure_log():
                     # se cambia la contrasena del usuario
                     nueva_contrasena=acciones.cambiar_contrasena(usuario)
                     escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
-                    acciones.enviar_mail('Password Check Failed', 'muchos intentos fallidos de inicio de sesion',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}. Por seguridad se cambio la contrasenha del usuario {usuario} a {nueva_contrasena}')
+                    acciones.enviar_mail('Password Check Failed', 'muchos intentos fallidos de inicio de sesion',f'Se encontraron {cantidad_errores} intentos de inicio de sesión fallidas para {usuario}. Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena} por seguridad')
                     
         else:
             print("No se encontraron intentos de inicio de sesión fallidos.")
@@ -128,10 +128,9 @@ def buscar_messages_log():
                     print(f"El usuario {usuario} tuvo {cantidad_errores} errores de autenticación. Se cambiara la contrasena del usuario por seguridad")
 
                     # se cambia la contrasena del usuario
-                    # se cambia la contrasena del usuario
                     nueva_contrasena=acciones.cambiar_contrasena(usuario)
                     escribir_resultado.escribir_prevencion(f'Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena} porque se encontraron {cantidad_errores} intentos de inicio de sesión fallidas')
-                    acciones.enviar_mail('Password Check Failed', 'Demasiados intentos fallidos de inicio de sesion',f"Se encontraron {cantidad_errores} errores de autenticación para el usuario {usuario}. Por seguridad se cambio la contrasenha del usuario {usuario} a {nueva_contrasena}")
+                    acciones.enviar_mail('Error de Autenticacion', 'Se detectaron muchos intentos fallidos de inicio de sesion',f"Se encontro {cantidad_errores} errores de autenticación para el usuar {usuario}. Se cambio la contrasenha del usuario {usuario} a {nueva_contrasena}, por seguridad")
                     
         else:
             print("No se encontraron intentos de inicio de sesión fallido.")
