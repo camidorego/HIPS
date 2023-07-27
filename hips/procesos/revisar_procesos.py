@@ -19,7 +19,7 @@ sys.path.append(logs_dir)
 import acciones
 
 def kill_process(process_info):
-    # Terminates the process passed as a parameter
+    # terminamos el proceso
     try:
         pid = process_info['pid']
         process = psutil.Process(pid)
@@ -51,19 +51,19 @@ def revisar_procesos():
                 print(f"  Tiempo de ejecución: {elapsed_time_seconds:.2f} segundos")
                 print("-" * 30)
 
-                # Guardar la información en los logs (asumiendo que las funciones existen)
+                # Guardar la información en los logs
                 escribir_resultado.guardar_resultado_csv('procesos', 'revisar_procesos', f" - PID: {process_pid}, Nombre: {process_name}, Uso de memoria: {memory_percent:.2f}%, Tiempo: {elapsed_time_seconds:.2f} segundos", '')
                 escribir_resultado.escribir_log('Proceso consumiendo mucha memoria', f" - PID: {process_pid}, Nombre: {process_name}, Uso de memoria: {memory_percent:.2f}%, Tiempo: {elapsed_time_seconds:.2f} segundos")
 
                 if elapsed_time_seconds > 10:
-                    # Aquí debería estar definida la función kill_process para terminar el proceso
+                    # Terminamos el proceso con la funcion kill_process
                     kill_process(process.info)
                     escribir_resultado.guardar_resultado_csv('procesos', 'revisar_procesos', f"Se terminó el proceso {process_name} porque consumía el {memory_percent:.2f}% de memoria por {elapsed_time_seconds:.2f} segundos", '')
                     procesos_terminados.append(process_name)
                     escribir_resultado.escribir_prevencion(f"Se terminó el proceso por alto consumo de memoria -> PID: {process_pid}, Nombre: {process_name}, Uso de memoria: {memory_percent:.2f}%, Tiempo: {elapsed_time_seconds:.2f} segundos")
 
         if procesos_terminados:
-            # Se le informa al administrador
+            # se le informa al administrador
             acciones.enviar_mail('Alarma!', 'Rendimiento del sistema', f'Se terminaron los procesos {", ".join(procesos_terminados)} porque consumían demasiada memoria')
         else:
             escribir_resultado.guardar_resultado_csv('procesos', 'revisar_procesos', 'No se encontraron procesos que consumen mucha memoria', '')
