@@ -33,16 +33,17 @@ def revisar_procesos():
 
     try:
         for process in psutil.process_iter(['pid', 'name', 'memory_percent', 'create_time']):
+            # guardamos la informacion relevante de los procesos
+            process_name = process.info['name']
+            process_pid = process.info['pid']
+            memory_percent = process.info['memory_percent']
+            create_time = process.info['create_time']
             
             if process_name in ('systemd', 'gnome-s+', 'gnome-shell','bash', 'chrome','python3','flask'):
                 # Ignorar los procesos del sistema
                 continue
 
             if memory_percent > 10.0:
-                process_name = process.info['name']
-                process_pid = process.info['pid']
-                memory_percent = process.info['memory_percent']
-                create_time = process.info['create_time']
                 elapsed_time_seconds = time.time() - create_time
 
                 print(f"Proceso: {process_name} (PID: {process_pid})")
