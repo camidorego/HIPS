@@ -68,7 +68,7 @@ Instalar y configurar PostgreSQL
   
 Creamos un nuevo cluster de la base de datos PostgreSQL
 
-    sudo systemctl start postgresql
+    sudo postgresql-setup --initdb
 
 Iniciamos y habilitamos el servicio de postgres
 
